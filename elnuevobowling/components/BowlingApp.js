@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const BowlingApp = () => {
   // Estado para jugadores, puntuaciones y la pantalla actual
-  const [jugadores, setJugadores] = useState([{ nombre: "", puntos: 0 }]);
+  const [jugadores, setJugadores] = useState([]);
   const [turno, setTurno] = useState(0);
   const [tiro1, setTiro1] = useState(0);
   const [tiro2, setTiro2] = useState(0);
