@@ -1,0 +1,1 @@
+/* Placeholder: reemplazar con el código del canvas */
