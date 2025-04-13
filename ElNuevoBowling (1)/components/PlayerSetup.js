@@ -1,55 +1,38 @@
 import { useState } from "react";
 
-const PlayerSetup = ({ onStartGame }) => {
-  const [players, setPlayers] = useState([""]);
-  const [newPlayer, setNewPlayer] = useState("");
+export default function PlayerSetup() {
+  const [players, setPlayers] = useState([]);
+  const [playerName, setPlayerName] = useState("");
 
-  const handleAddPlayer = () => {
-    if (newPlayer) {
-      setPlayers([...players, newPlayer]);
-      setNewPlayer("");
-    }
-  };
-
-  const handleStartGame = () => {
-    if (players.length > 0) {
-      onStartGame(players);
+  const addPlayer = () => {
+    if (playerName && !players.includes(playerName)) {
+      setPlayers([...players, playerName]);
+      setPlayerName("");
     }
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <h1 className="text-2xl font-bold">Agregar Jugadores</h1>
-      <div className="space-y-2">
+    <div className="text-center">
+      <h1 className="text-3xl mb-4">Configuración de Jugadores</h1>
+      <input
+        type="text"
+        value={playerName}
+        onChange={(e) => setPlayerName(e.target.value)}
+        placeholder="Nombre del jugador"
+        className="border-2 p-2 mb-4"
+      />
+      <button
+        onClick={addPlayer}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Agregar Jugador
+      </button>
+
+      <div className="mt-4">
         {players.map((player, index) => (
-          <div key={index} className="flex items-center space-x-2">
-            <span className="text-xl">{player || "Jugador " + (index + 1)}</span>
-          </div>
+          <p key={index}>{player}</p>
         ))}
       </div>
-      <div className="flex space-x-2">
-        <input
-          type="text"
-          placeholder="Nuevo Jugador"
-          value={newPlayer}
-          onChange={(e) => setNewPlayer(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <button
-          onClick={handleAddPlayer}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Agregar
-        </button>
-      </div>
-      <button
-        onClick={handleStartGame}
-        className="bg-green-500 text-white p-4 rounded mt-4"
-      >
-        Comenzar Juego
-      </button>
     </div>
   );
-};
-
-export default PlayerSetup;
+}
