@@ -1,58 +1,65 @@
 import { useState } from "react";
 
-export default function GameScreen({ players, onEnd }) {
-  const [currentPlayer, setCurrentPlayer] = useState(0);
-  const [turn, setTurn] = useState(1);
-  const [results, setResults] = useState(players.map(p => ({ ...p, points: [] })));
+const GameScreen = ({ players, onEndGame }) => {
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [currentTiro, setCurrentTiro] = useState(1);
+  const [puntajes, setPuntajes] = useState(players.map(() => Array(10).fill(0)));
 
-  const addScore = (score) => {
-    const updated = [...results];
-    const player = updated[currentPlayer];
-    const tiro = player.points.length % 2;
-    const last = player.points[player.points.length - 1] || 0;
+  const handleTiro = (pins) => {
+    let updatedPuntajes = [...puntajes];
+    updatedPuntajes[currentPlayerIndex][currentTiro - 1] = pins;
 
-    if (tiro === 0 && score === 10) {
-      player.points.push(20);
-    } else if (tiro === 1 && last + score > 10) {
-      alert("No podés tirar más de 10 pinos en total.");
-      return;
+    if (pins === 10 && currentTiro === 1) {
+      // Si es un strike, el siguiente tiro se salta
+      updatedPuntajes[currentPlayerIndex][currentTiro] = 20;
+      setCurrentTiro(1);
+      setCurrentPlayerIndex((prev) => (prev + 1) % players.length);
     } else {
-      player.points.push(score);
+      setCurrentTiro(currentTiro === 1 ? 2 : 1);
     }
 
-    setResults(updated);
+    setPuntajes(updatedPuntajes);
+  };
 
-    if (currentPlayer === players.length - 1) {
-      if (turn === 10) {
-        const ranked = [...updated].map(p => ({
-          ...p,
-          score: p.points.reduce((a, b) => a + b, 0)
-        })).sort((a, b) => b.score - a.score);
-        onEnd(ranked);
-        return;
-      }
-      setTurn(turn + 1);
-      setCurrentPlayer(0);
-    } else {
-      setCurrentPlayer(currentPlayer + 1);
-    }
+  const handleFinishGame = () => {
+    onEndGame(puntajes);
   };
 
   return (
-    <div className="text-center space-y-4">
-      <h2 className="text-xl font-bold">Turno {turn}</h2>
-      <h3 className="text-lg">Jugador: {players[currentPlayer].name}</h3>
-      <div className="grid grid-cols-5 gap-2 justify-center">
-        {[...Array(11).keys()].map(n => (
+    <div className="flex flex-col items-center space-y-4">
+      <h1 className="text-2xl font-bold">Jugador: {players[currentPlayerIndex]}</h1>
+      <h2 className="text-lg">Tiro {currentTiro}</h2>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => handleTiro(10)}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Strike
+        </button>
+        <button
+          onClick={() => handleTiro(0)}
+          className="bg-red-500 text-white p-2 rounded"
+        >
+          0 Pinos
+        </button>
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((pins) => (
           <button
-            key={n}
-            className="bg-blue-400 text-white p-2 rounded hover:bg-blue-600"
-            onClick={() => addScore(n)}
+            key={pins}
+            onClick={() => handleTiro(pins)}
+            className="bg-yellow-500 text-white p-2 rounded"
           >
-            {n}
+            {pins} Pinos
           </button>
         ))}
       </div>
+      <button
+        onClick={handleFinishGame}
+        className="bg-green-500 text-white p-4 rounded mt-4"
+      >
+        Terminar Juego
+      </button>
     </div>
   );
-}
+};
+
+export default GameScreen;

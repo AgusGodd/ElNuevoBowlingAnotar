@@ -1,38 +1,55 @@
 import { useState } from "react";
 
-export default function PlayerSetup({ onStart }) {
-  const [name, setName] = useState("");
-  const [players, setPlayers] = useState([]);
+const PlayerSetup = ({ onStartGame }) => {
+  const [players, setPlayers] = useState([""]);
+  const [newPlayer, setNewPlayer] = useState("");
 
-  const addPlayer = () => {
-    if (name.trim()) {
-      setPlayers([...players, { name, score: 0 }]);
-      setName("");
+  const handleAddPlayer = () => {
+    if (newPlayer) {
+      setPlayers([...players, newPlayer]);
+      setNewPlayer("");
+    }
+  };
+
+  const handleStartGame = () => {
+    if (players.length > 0) {
+      onStartGame(players);
     }
   };
 
   return (
-    <div className="space-y-4 text-center">
-      <h1 className="text-2xl font-bold">🎳 El Nuevo Bowling</h1>
-      <input
-        className="p-2 border rounded"
-        placeholder="Nombre del jugador"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <button className="block mx-auto bg-blue-500 text-white p-2 rounded" onClick={addPlayer}>
-        Agregar jugador
-      </button>
-      <ul className="space-y-1">
-        {players.map((p, i) => (
-          <li key={i}>{p.name}</li>
+    <div className="flex flex-col items-center space-y-4">
+      <h1 className="text-2xl font-bold">Agregar Jugadores</h1>
+      <div className="space-y-2">
+        {players.map((player, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <span className="text-xl">{player || "Jugador " + (index + 1)}</span>
+          </div>
         ))}
-      </ul>
-      {players.length > 0 && (
-        <button className="bg-green-600 text-white p-2 mt-4 rounded" onClick={() => onStart(players)}>
-          Comenzar partida
+      </div>
+      <div className="flex space-x-2">
+        <input
+          type="text"
+          placeholder="Nuevo Jugador"
+          value={newPlayer}
+          onChange={(e) => setNewPlayer(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <button
+          onClick={handleAddPlayer}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Agregar
         </button>
-      )}
+      </div>
+      <button
+        onClick={handleStartGame}
+        className="bg-green-500 text-white p-4 rounded mt-4"
+      >
+        Comenzar Juego
+      </button>
     </div>
   );
-}
+};
+
+export default PlayerSetup;
