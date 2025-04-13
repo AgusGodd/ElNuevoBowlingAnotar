@@ -1,8 +1,11 @@
-import { useState } from "react";
-import PlayerSetup from "../components/PlayerSetup";
-import GameScreen from "../components/GameScreen";
-import FinalScreen from "../components/FinalScreen";
+import { useState } from 'react';
+import PlayerSetup from '../components/PlayerSetup';
+import GameScreen from '../components/GameScreen';
+import FinalScreen from '../components/FinalScreen';
 
+export default function Home() {
+  // Código para manejar el flujo de la aplicación
+}
 export default function Home() {
   const [players, setPlayers] = useState([]);
   const [puntajes, setPuntajes] = useState([]);
